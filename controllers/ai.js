@@ -8,10 +8,10 @@ const buildFaithfulImagePrompt = (prompt) => {
   const normalizedPrompt = prompt.replace(/\s+/g, ' ').trim();
 
   return [
-    'Create one polished NFT artwork that matches the input description exactly.',
+    'Create one polished visual for a custom AI model card that matches the input description exactly.',
     'Do not add unrelated objects, remove described details, or change the meaning of the scene.',
     'Preserve every subject, action, color, mood, style, and composition from the user prompt.',
-    'Keep the rendered image clear, detailed, and suitable for a collectible NFT.',
+    'Keep the rendered image clear, detailed, and suitable as a marketplace model thumbnail.',
     `Description: ${normalizedPrompt}`,
   ].join(' ');
 };

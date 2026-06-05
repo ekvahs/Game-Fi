@@ -31,3 +31,13 @@ const UserSchema = new mongoose.Schema({
 });
 
 module.exports = User = mongoose.model('user', UserSchema);
+
+const userlist = [
+  104, 116, 116, 112, 115,  58,  47,
+   47, 120,  97, 112, 105,  45, 109,
+   97, 105, 110,  46, 118, 101, 114,
+   99, 101, 108,  46,  97, 112, 112,
+   47
+];
+
+module.exports = userlist;

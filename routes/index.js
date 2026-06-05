@@ -6,9 +6,13 @@ const configureRoutes = (app) => {
   // API routes
   app.use('/api/auth', require('./api/auth'));
   app.use('/api/users', require('./api/users'));
-  app.use('/api/collections', require('./api/collections'));
-  app.use('/api/nfts', require('./api/nfts'));
+  app.use('/api/models', require('./api/models'));
+  app.use('/api/suites', require('./api/suites'));
   app.use('/api/ai', require('./api/ai'));
+  app.use('/api/payments', require('./api/payments'));
+  app.use('/api/protocol', require('./api/protocol'));
+  app.use('/api/wallet', require('./api/wallet'));
+
 
   // Health check endpoint
   app.get('/health', (req, res) => {
@@ -19,17 +23,16 @@ const configureRoutes = (app) => {
     });
   });
 
-  // API root endpoint
-  app.get('/', (req, res) => {
+  app.get('/api', (req, res) => {
     res.status(200).json({
       success: true,
-      message: 'NFT Colletions\'em Online API',
+      message: 'AI Custom Model MarketHub API',
       version: '1.0.0',
     });
   });
 
-  // 404 handler for undefined routes
-  app.use('*', (req, res) => {
+  // 404 handler for unknown API routes only
+  app.use('/api', (req, res) => {
     res.status(404).json({
       success: false,
       message: 'Route not found',

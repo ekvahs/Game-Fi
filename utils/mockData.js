@@ -6,14 +6,14 @@ const config = require('../config');
  */
 
 let users = [];
-let collections = [];
-let nfts = [];
+let suites = [];
+let catalogModels = [];
 let nextUserId = 1;
-let nextCollectionId = 1;
-let nextNftId = 1;
+let nextSuiteId = 1;
+let nextModelId = 1;
 
 /**
- * Initialize mock data with demo users, collections, and NFTs
+ * Initialize mock data with demo users, suites, and models
  */
 const initializeMockData = () => {
   users = [
@@ -37,51 +37,51 @@ const initializeMockData = () => {
     },
   ];
 
-  collections = [
+  suites = [
     {
       id: '1',
-      collectionName: 'DSGN Animals',
-      description: 'A premium art collection featuring futuristic animal avatars.',
+      suiteName: 'DSGN Animals',
+      description: 'A language and vision suite of custom animal avatars.',
       ownerId: '1',
       imageUrl: '/images/collections/collection-1.png',
       created: new Date(),
     },
     {
       id: '2',
-      collectionName: 'Magic Mushrooms',
-      description: 'Surreal NFT collection inspired by mystical landscapes.',
+      suiteName: 'Magic Mushrooms',
+      description: 'A multimodal suite inspired by surreal generated landscapes.',
       ownerId: '2',
       imageUrl: '/images/collections/collection-2.png',
       created: new Date(),
     },
   ];
 
-  nfts = [
+  catalogModels = [
     {
       id: '1',
       title: 'Lunar Fox',
-      description: 'A mystical fox NFT from the DSGN Animals collection.',
+      description: 'A custom vision model from the DSGN Animals suite.',
       price: 2.5,
       ownerId: '1',
-      collectionId: '1',
+      suiteId: '1',
       imageUrl: '/images/nfts/nft-1.png',
       created: new Date(),
     },
     {
       id: '2',
       title: 'Shroom Glow',
-      description: 'A glowing mushroom artwork from the Magic Mushrooms collection.',
+      description: 'A custom generative model from the Magic Mushrooms suite.',
       price: 3.0,
       ownerId: '2',
-      collectionId: '2',
+      suiteId: '2',
       imageUrl: '/images/nfts/nft-2.png',
       created: new Date(),
     },
   ];
 
   nextUserId = 3;
-  nextCollectionId = 3;
-  nextNftId = 3;
+  nextSuiteId = 3;
+  nextModelId = 3;
 };
 
 // Initialize on module load
@@ -160,119 +160,119 @@ const mockDataStore = {
     },
   },
 
-  collections: {
+  suites: {
     findById: (id) => {
       if (!id) return null;
-      return collections.find((collection) => collection.id === String(id)) || null;
+      return suites.find((suite) => suite.id === String(id)) || null;
     },
 
     findOne: (query) => {
       if (!query) return null;
 
-      if (query.collectionName) {
-        return collections.find((collection) => collection.collectionName.toLowerCase() === query.collectionName.toLowerCase().trim()) || null;
+      if (query.suiteName) {
+        return suites.find((suite) => suite.suiteName.toLowerCase() === query.suiteName.toLowerCase().trim()) || null;
       }
       return null;
     },
 
     findAll: () => {
-      return collections.slice();
+      return suites.slice();
     },
 
-    create: (collectionData) => {
-      if (!collectionData || !collectionData.collectionName) {
-        throw new Error('Invalid collection data');
+    create: (suiteData) => {
+      if (!suiteData || !suiteData.suiteName) {
+        throw new Error('Invalid suite data');
       }
 
-      const newCollection = {
-        id: String(nextCollectionId++),
-        collectionName: collectionData.collectionName.trim(),
-        description: collectionData.description || '',
-        ownerId: collectionData.ownerId || null,
-        imageUrl: collectionData.imageUrl || '',
+      const newSuite = {
+        id: String(nextSuiteId++),
+        suiteName: suiteData.suiteName.trim(),
+        description: suiteData.description || '',
+        ownerId: suiteData.ownerId || null,
+        imageUrl: suiteData.imageUrl || '',
         created: new Date(),
       };
 
-      collections.push(newCollection);
-      return newCollection;
+      suites.push(newSuite);
+      return newSuite;
     },
 
     update: (id, updateData) => {
       if (!id || !updateData) return null;
-      const collectionIndex = collections.findIndex((collection) => collection.id === String(id));
-      if (collectionIndex === -1) return null;
+      const suiteIndex = suites.findIndex((suite) => suite.id === String(id));
+      if (suiteIndex === -1) return null;
 
-      collections[collectionIndex] = {
-        ...collections[collectionIndex],
+      suites[suiteIndex] = {
+        ...suites[suiteIndex],
         ...updateData,
-        id: collections[collectionIndex].id,
-        created: collections[collectionIndex].created,
+        id: suites[suiteIndex].id,
+        created: suites[suiteIndex].created,
       };
 
-      return collections[collectionIndex];
+      return suites[suiteIndex];
     },
 
     remove: (id) => {
-      const collectionIndex = collections.findIndex((collection) => collection.id === String(id));
-      if (collectionIndex === -1) return null;
-      return collections.splice(collectionIndex, 1)[0];
+      const suiteIndex = suites.findIndex((suite) => suite.id === String(id));
+      if (suiteIndex === -1) return null;
+      return suites.splice(suiteIndex, 1)[0];
     },
   },
 
-  nfts: {
+  models: {
     findById: (id) => {
       if (!id) return null;
-      return nfts.find((nft) => nft.id === String(id)) || null;
+      return catalogModels.find((model) => model.id === String(id)) || null;
     },
 
-    findByCollectionId: (collectionId) => {
-      if (!collectionId) return [];
-      return nfts.filter((nft) => nft.collectionId === String(collectionId));
+    findBySuiteId: (suiteId) => {
+      if (!suiteId) return [];
+      return catalogModels.filter((model) => model.suiteId === String(suiteId));
     },
 
     findAll: () => {
-      return nfts.slice();
+      return catalogModels.slice();
     },
 
-    create: (nftData) => {
-      if (!nftData || !nftData.title) {
-        throw new Error('Invalid NFT data');
+    create: (modelData) => {
+      if (!modelData || !modelData.title) {
+        throw new Error('Invalid model data');
       }
 
-      const newNft = {
-        id: String(nextNftId++),
-        title: nftData.title.trim(),
-        description: nftData.description || '',
-        price: Number(nftData.price) || 0,
-        ownerId: nftData.ownerId || null,
-        collectionId: nftData.collectionId || null,
-        imageUrl: nftData.imageUrl || '',
+      const newModel = {
+        id: String(nextModelId++),
+        title: modelData.title.trim(),
+        description: modelData.description || '',
+        price: Number(modelData.price) || 0,
+        ownerId: modelData.ownerId || null,
+        suiteId: modelData.suiteId || null,
+        imageUrl: modelData.imageUrl || '',
         created: new Date(),
       };
 
-      nfts.push(newNft);
-      return newNft;
+      catalogModels.push(newModel);
+      return newModel;
     },
 
     update: (id, updateData) => {
       if (!id || !updateData) return null;
-      const nftIndex = nfts.findIndex((nft) => nft.id === String(id));
-      if (nftIndex === -1) return null;
+      const modelIndex = catalogModels.findIndex((model) => model.id === String(id));
+      if (modelIndex === -1) return null;
 
-      nfts[nftIndex] = {
-        ...nfts[nftIndex],
+      catalogModels[modelIndex] = {
+        ...catalogModels[modelIndex],
         ...updateData,
-        id: nfts[nftIndex].id,
-        created: nfts[nftIndex].created,
+        id: catalogModels[modelIndex].id,
+        created: catalogModels[modelIndex].created,
       };
 
-      return nfts[nftIndex];
+      return catalogModels[modelIndex];
     },
 
     remove: (id) => {
-      const nftIndex = nfts.findIndex((nft) => nft.id === String(id));
-      if (nftIndex === -1) return null;
-      return nfts.splice(nftIndex, 1)[0];
+      const modelIndex = catalogModels.findIndex((model) => model.id === String(id));
+      if (modelIndex === -1) return null;
+      return catalogModels.splice(modelIndex, 1)[0];
     },
   },
 };

@@ -1,15 +1,15 @@
 const express = require('express');
-const router = express.Router();
 const { check } = require('express-validator');
-const validateToken = require('../../middleware/auth');
-const { getCurrentUser, login } = require('../../controllers/auth');
+const { requireAuth } = require('../../middleware/auth');
+const { login, getCurrentUser } = require('../../controllers/auth');
 
-router.get('/', validateToken, getCurrentUser);
+const router = express.Router();
+
+router.get('/', requireAuth, getCurrentUser);
 
 router.post(
   '/',
   [
-    check('email', 'Please include a valid email').isEmail(),
     check('password', 'Password is required').exists(),
   ],
   login,

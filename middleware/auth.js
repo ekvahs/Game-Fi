@@ -4,27 +4,39 @@ const { AuthenticationError } = require('../utils/errors');
 const { sendError } = require('../utils/response');
 const { HTTP_STATUS, ERROR_MESSAGES } = require('../utils/constants');
 
-/**
- * JWT Authentication Middleware
- * Validates JWT token from request headers and attaches user info to request object
- */
-const validateToken = (req, res, next) => {
-  try {
-    const token = req.header('x-auth-token');
+const jwtSecret = () => config.JWT_SECRET || 'demo-secret-key-change-in-production';
 
+const readToken = (req) => {
+  const header = req.header('x-auth-token') || req.header('authorization') || '';
+  if (header.toLowerCase().startsWith('bearer ')) return header.slice(7).trim();
+  return header || '';
+};
+
+const attachUser = (req, decoded) => {
+  req.user = decoded.user || decoded;
+};
+
+const optionalAuth = (req, res, next) => {
+  const token = readToken(req);
+  if (!token) return next();
+  jwt.verify(token, jwtSecret(), (err, decoded) => {
+    if (!err && decoded) attachUser(req, decoded);
+    next();
+  });
+};
+
+const requireAuth = (req, res, next) => {
+  try {
+    const token = readToken(req);
     if (!token) {
       return sendError(res, ERROR_MESSAGES.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED);
     }
 
-    const jwtSecret = config.JWT_SECRET || 'demo-secret-key-change-in-production';
-
-    jwt.verify(token, jwtSecret, (err, decoded) => {
+    jwt.verify(token, jwtSecret(), (err, decoded) => {
       if (err) {
         return sendError(res, ERROR_MESSAGES.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED);
       }
-
-      // Attach user info to request object
-      req.user = decoded.user;
+      attachUser(req, decoded);
       next();
     });
   } catch (err) {
@@ -33,4 +45,9 @@ const validateToken = (req, res, next) => {
   }
 };
 
+const validateToken = requireAuth;
+
 module.exports = validateToken;
+module.exports.requireAuth = requireAuth;
+module.exports.optionalAuth = optionalAuth;
+module.exports.AuthenticationError = AuthenticationError;
